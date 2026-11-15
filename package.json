@@ -1,0 +1,30 @@
+{
+  "name": "ishq-e-mehfil",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ishq e Mehfil - ticket verification portal",
+  "main": "dist/backend/server.js",
+  "scripts": {
+    "dev": "tsx watch backend/server.ts",
+    "build": "tsc",
+    "start": "node dist/backend/server.js",
+    "import": "tsx backend/scripts/import.ts",
+    "import:prod": "node dist/backend/scripts/import.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}
