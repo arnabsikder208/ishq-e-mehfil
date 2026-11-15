@@ -10,17 +10,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Serve static frontend files reliably on Vercel and locally
+app.use(express.static(path.join(process.cwd(), 'frontend')));
 
 // 1. Verify Ticket endpoint
 app.post('/api/verify', (req, res) => {
   const { serialNo } = req.body;
   
-  // Search strictly inside db.ts tickets list
   const ticket = tickets.find(t => t.id === serialNo || t.serialNo === serialNo);
 
-  // If the ticket is not found in db.ts, reject it immediately
   if (!ticket) {
     return res.status(200).json({
       status: 'invalid',
@@ -28,15 +26,12 @@ app.post('/api/verify', (req, res) => {
     });
   }
 
-  // Ensure serialNo property exists on the object
   ticket.serialNo = ticket.serialNo || ticket.id;
 
-  // Calculate multi-ticket details for this person name
   const samePersonTickets = tickets.filter(t => t.name.toLowerCase() === ticket.name.toLowerCase());
   const totalOwned = samePersonTickets.length;
   const usedOwned = samePersonTickets.filter(t => t.status === 'used').length;
 
-  // Attach multi-ticket info summary to the ticket object response
   const ticketResponse = {
     ...ticket,
     multiInfo: totalOwned > 1 ? `${totalOwned} total passes (${usedOwned} used)` : undefined
@@ -50,7 +45,6 @@ app.post('/api/verify', (req, res) => {
     });
   }
 
-  // Mark ticket as verified (used)
   ticket.status = 'used';
   ticket.verifiedDate = new Date().toLocaleDateString();
   ticket.verifiedTime = new Date().toLocaleTimeString();
@@ -92,9 +86,13 @@ function getStats() {
   return { total, verified, remaining };
 }
 
-// Start Server
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// Only run local listener if not in Vercel production environment
+if (!process.env.VERCEL) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
   });
-});
+}
+
+export default app;
