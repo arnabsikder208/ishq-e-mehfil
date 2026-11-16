@@ -30,8 +30,10 @@
       <h2>Enter Your Serial No.</h2>
       <p class="muted">Verify your ticket to proceed with entry.</p>
       <div class="field-wrap">
-        <input id="serial" class="field" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="12"
-               placeholder="Enter Ticket Serial Number" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ticket serial number">
+        <input id="serial" class="field" type="text" inputmode="text" maxlength="12"
+               placeholder="Enter Ticket Serial Number" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ticket serial number"
+               autocapitalize="characters"
+               >
       </div>
       <button id="verifyBtn" class="btn" type="button"><span class="btn-label">VERIFY NOW</span><span class="spinner" aria-hidden="true"></span></button>
       <p id="inlineError" class="inline-error" role="alert" hidden></p>
