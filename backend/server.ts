@@ -11,21 +11,27 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'frontend')));
 
-// Initialize Upstash Redis from Vercel environment variables
-const hasRedis = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-const redis = hasRedis
-  ? new Redis({
-      url: process.env.KV_REST_API_URL!,
-      token: process.env.KV_REST_API_TOKEN!,
-    })
-  : null;
+// Automatically detect whichever Redis env var names Vercel injected
+const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+let redis: Redis | null = null;
+if (redisUrl && redisToken) {
+  try {
+    redis = new Redis({
+      url: redisUrl,
+      token: redisToken,
+    });
+  } catch (e) {
+    console.error('Failed to initialize Redis:', e);
+  }
+}
 
 interface VerifiedRecord {
   verifiedDate: string;
   verifiedTime: string;
   verifiedByName: string;
 }
-
 // Helper: Fetch all permanently verified tickets from Redis (or local memory fallback)
 const localMemoryStore: Record<string, VerifiedRecord> = {};
 
