@@ -4,14 +4,15 @@
   "private": true,
   "description": "Ishq e Mehfil - ticket verification portal",
   "main": "dist/backend/server.js",
- "scripts": {
-  "dev": "tsx watch backend/server.ts",
-  "build": "echo 'Skipping strict tsc for deployment'"
-},
+  "scripts": {
+    "dev": "tsx watch backend/server.ts",
+    "build": "echo 'Skipping strict tsc for deployment'"
+  },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
+    "@upstash/redis": "^1.41.0",
     "cors": "^2.8.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
